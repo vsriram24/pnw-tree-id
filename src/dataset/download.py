@@ -5,6 +5,7 @@ import os
 import re
 import time
 from pathlib import Path
+from typing import Dict, List, Optional
 
 import requests
 import yaml
@@ -40,11 +41,11 @@ def download_image(url: str, save_path: Path) -> bool:
 
 def fetch_observations(
     taxon_id: int,
-    place_ids: list[int],
+    place_ids: List[int],
     quality_grade: str = "research",
     per_page: int = 200,
     max_images: int = 400,
-) -> list[dict]:
+) -> List[dict]:
     """Fetch observation photo URLs from iNaturalist API.
 
     Uses the v1 observations API directly to avoid pyinaturalist version issues.
@@ -62,7 +63,7 @@ def fetch_observations(
             "per_page": per_page,
             "page": page,
             "order": "desc",
-            "order_by": "votes",
+            "order_by": "created_at",
         }
 
         try:
@@ -109,7 +110,7 @@ def fetch_observations(
 
 def download_species_images(
     species_entry: dict,
-    place_ids: list[int],
+    place_ids: List[int],
     output_dir: str = "data/raw",
     max_images: int = 400,
     quality_grade: str = "research",
@@ -157,8 +158,8 @@ def download_species_images(
 def download_all(
     config_path: str = "config/species.yaml",
     output_dir: str = "data/raw",
-    species_filter: list[str] | None = None,
-) -> dict[str, int]:
+    species_filter: Optional[List[str]] = None,
+) -> Dict[str, int]:
     """Download images for all species in the config.
 
     Args:

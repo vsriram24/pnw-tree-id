@@ -1,6 +1,7 @@
 """Single-image inference wrapper for the tree identification model."""
 
 from pathlib import Path
+from typing import List, Optional
 
 import torch
 import torch.nn.functional as F
@@ -13,7 +14,7 @@ from src.model.architecture import create_model
 class TreeClassifier:
     """Wrapper for loading a trained model and running predictions."""
 
-    def __init__(self, checkpoint_path: str, device: str | None = None):
+    def __init__(self, checkpoint_path: str, device: Optional[str] = None):
         """Load model from checkpoint.
 
         Args:
@@ -42,7 +43,7 @@ class TreeClassifier:
         self.transforms = get_inference_transforms()
 
     @torch.no_grad()
-    def predict(self, image_path: str, top_k: int = 5) -> list[dict]:
+    def predict(self, image_path: str, top_k: int = 5) -> List[dict]:
         """Predict species from an image file.
 
         Args:
@@ -56,7 +57,7 @@ class TreeClassifier:
         return self.predict_pil(img, top_k=top_k)
 
     @torch.no_grad()
-    def predict_pil(self, image: Image.Image, top_k: int = 5) -> list[dict]:
+    def predict_pil(self, image: Image.Image, top_k: int = 5) -> List[dict]:
         """Predict species from a PIL Image.
 
         Args:
@@ -70,6 +71,7 @@ class TreeClassifier:
         logits = self.model(tensor)
         probs = F.softmax(logits, dim=1)[0]
 
+        top_k = min(top_k, probs.size(0))
         top_probs, top_indices = probs.topk(top_k)
         results = []
         for prob, idx in zip(top_probs, top_indices):

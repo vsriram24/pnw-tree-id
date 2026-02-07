@@ -1,10 +1,11 @@
 """Singleton model loader for the Flask web app."""
 
 import os
+from typing import Optional
 
 from src.model.inference import TreeClassifier
 
-_classifier: TreeClassifier | None = None
+_classifier: Optional[TreeClassifier] = None
 
 
 def get_classifier() -> TreeClassifier:

@@ -220,6 +220,26 @@ def train(
 
     # ===== Phase 2: Fine-tune entire model =====
     print("\n=== Phase 2: Fine-tuning entire model ===")
+
+    # Reduce batch size for phase 2 to avoid OOM on memory-constrained GPUs
+    phase2_batch = max(batch_size // 2, 4)
+    if phase2_batch != batch_size:
+        print(f"  Reducing batch size to {phase2_batch} for full model fine-tuning")
+        train_loader = DataLoader(
+            train_dataset,
+            batch_size=phase2_batch,
+            shuffle=True,
+            num_workers=num_workers,
+            pin_memory=True,
+        )
+        val_loader = DataLoader(
+            val_dataset,
+            batch_size=phase2_batch,
+            shuffle=False,
+            num_workers=num_workers,
+            pin_memory=True,
+        )
+
     unfreeze_backbone(model)
     param_groups = get_parameter_groups(model, backbone_lr, fine_tune_lr)
     optimizer = torch.optim.AdamW(param_groups, weight_decay=0.01)

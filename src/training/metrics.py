@@ -1,6 +1,7 @@
 """Training and evaluation metrics for tree classification."""
 
 from pathlib import Path
+from typing import List, Optional
 
 import matplotlib
 matplotlib.use("Agg")
@@ -34,9 +35,9 @@ def compute_topk_accuracy(
 
 
 def compute_classification_metrics(
-    all_preds: list[int],
-    all_targets: list[int],
-    class_names: list[str] | None = None,
+    all_preds: List[int],
+    all_targets: List[int],
+    class_names: Optional[List[str]] = None,
 ) -> dict:
     """Compute per-class and overall classification metrics.
 
@@ -87,9 +88,9 @@ def compute_classification_metrics(
 
 
 def plot_confusion_matrix(
-    all_preds: list[int],
-    all_targets: list[int],
-    class_names: list[str],
+    all_preds: List[int],
+    all_targets: List[int],
+    class_names: List[str],
     save_path: str = "confusion_matrix.png",
 ) -> None:
     """Generate and save a confusion matrix heatmap."""
