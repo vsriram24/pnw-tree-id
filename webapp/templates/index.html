@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="upload-section">
+    <div id="drop-zone" class="drop-zone">
+        <div class="drop-zone-content">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Drag & drop a tree photo here</p>
+            <p class="drop-zone-hint">or click to browse</p>
+            <p class="drop-zone-formats">JPG, PNG, WebP up to 16MB</p>
+        </div>
+        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
+    </div>
+
+    <div id="preview-section" class="preview-section hidden">
+        <img id="preview-image" alt="Uploaded tree photo">
+        <button id="clear-btn" class="btn btn-secondary">Clear</button>
+    </div>
+
+    <button id="predict-btn" class="btn btn-primary hidden">Identify Tree</button>
+
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing image...</p>
+    </div>
+
+    <div id="results" class="results hidden">
+        <h2>Results</h2>
+        <div id="predictions-list"></div>
+    </div>
+
+    <div id="error" class="error hidden"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

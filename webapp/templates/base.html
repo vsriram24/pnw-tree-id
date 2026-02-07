@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PNW Tree Identifier{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>PNW Tree Identifier</h1>
+        <p class="subtitle">Identify Pacific Northwest tree species from photos</p>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>Powered by EfficientNetV2 &middot; Trained on iNaturalist data</p>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
