@@ -2,123 +2,123 @@ species:
   # Conifers
   - common_name: Douglas Fir
     scientific_name: Pseudotsuga menziesii
-    taxon_id: 48530
+    taxon_id: 48256
     group: conifer
 
   - common_name: Western Red Cedar
     scientific_name: Thuja plicata
-    taxon_id: 48857
+    taxon_id: 48252
     group: conifer
 
   - common_name: Sitka Spruce
     scientific_name: Picea sitchensis
-    taxon_id: 48577
+    taxon_id: 68131
     group: conifer
 
   - common_name: Western Hemlock
     scientific_name: Tsuga heterophylla
-    taxon_id: 48856
+    taxon_id: 48254
     group: conifer
 
   - common_name: Mountain Hemlock
     scientific_name: Tsuga mertensiana
-    taxon_id: 48855
+    taxon_id: 68089
     group: conifer
 
   - common_name: Ponderosa Pine
     scientific_name: Pinus ponderosa
-    taxon_id: 48562
+    taxon_id: 48461
     group: conifer
 
   - common_name: Lodgepole Pine
     scientific_name: Pinus contorta
-    taxon_id: 48566
+    taxon_id: 48934
     group: conifer
 
   - common_name: Western White Pine
     scientific_name: Pinus monticola
-    taxon_id: 48572
+    taxon_id: 68084
     group: conifer
 
   - common_name: Sugar Pine
     scientific_name: Pinus lambertiana
-    taxon_id: 48571
+    taxon_id: 64040
     group: conifer
 
   - common_name: Noble Fir
     scientific_name: Abies procera
-    taxon_id: 48546
+    taxon_id: 75242
     group: conifer
 
   - common_name: Grand Fir
     scientific_name: Abies grandis
-    taxon_id: 48543
+    taxon_id: 63690
     group: conifer
 
   - common_name: Subalpine Fir
     scientific_name: Abies lasiocarpa
-    taxon_id: 48544
+    taxon_id: 75241
     group: conifer
 
   - common_name: Pacific Silver Fir
     scientific_name: Abies amabilis
-    taxon_id: 48539
+    taxon_id: 75240
     group: conifer
 
   - common_name: White Fir
     scientific_name: Abies concolor
-    taxon_id: 48540
+    taxon_id: 68087
     group: conifer
 
   - common_name: Incense Cedar
     scientific_name: Calocedrus decurrens
-    taxon_id: 48859
+    taxon_id: 53723
     group: conifer
 
   - common_name: Alaska Yellow Cedar
     scientific_name: Callitropsis nootkatensis
-    taxon_id: 136329
+    taxon_id: 820904
     group: conifer
 
   - common_name: Port Orford Cedar
     scientific_name: Chamaecyparis lawsoniana
-    taxon_id: 48862
+    taxon_id: 76237
     group: conifer
 
   - common_name: Engelmann Spruce
     scientific_name: Picea engelmannii
-    taxon_id: 48575
+    taxon_id: 78582
     group: conifer
 
   - common_name: Western Larch
     scientific_name: Larix occidentalis
-    taxon_id: 48554
+    taxon_id: 69849
     group: conifer
 
   - common_name: Western Juniper
     scientific_name: Juniperus occidentalis
-    taxon_id: 48522
+    taxon_id: 68088
     group: conifer
 
   - common_name: Pacific Yew
     scientific_name: Taxus brevifolia
-    taxon_id: 48501
+    taxon_id: 55209
     group: conifer
 
   - common_name: Coast Redwood
     scientific_name: Sequoia sempervirens
-    taxon_id: 47851
+    taxon_id: 47372
     group: conifer
 
   # Broadleaf
   - common_name: Big Leaf Maple
     scientific_name: Acer macrophyllum
-    taxon_id: 48092
+    taxon_id: 48227
     group: broadleaf
 
   - common_name: Vine Maple
     scientific_name: Acer circinatum
-    taxon_id: 48095
+    taxon_id: 48258
     group: broadleaf
 
   - common_name: Red Alder
@@ -128,77 +128,77 @@ species:
 
   - common_name: White Alder
     scientific_name: Alnus rhombifolia
-    taxon_id: 57139
+    taxon_id: 53351
     group: broadleaf
 
   - common_name: Pacific Madrone
     scientific_name: Arbutus menziesii
-    taxon_id: 48847
+    taxon_id: 51046
     group: broadleaf
 
   - common_name: Oregon White Oak
     scientific_name: Quercus garryana
-    taxon_id: 48748
+    taxon_id: 68632
     group: broadleaf
 
   - common_name: Canyon Live Oak
     scientific_name: Quercus chrysolepis
-    taxon_id: 48736
+    taxon_id: 51092
     group: broadleaf
 
   - common_name: Oregon Ash
     scientific_name: Fraxinus latifolia
-    taxon_id: 76545
+    taxon_id: 63878
     group: broadleaf
 
   - common_name: Black Cottonwood
     scientific_name: Populus trichocarpa
-    taxon_id: 53652
+    taxon_id: 78699
     group: broadleaf
 
   - common_name: Quaking Aspen
     scientific_name: Populus tremuloides
-    taxon_id: 47855
+    taxon_id: 54840
     group: broadleaf
 
   - common_name: Pacific Dogwood
     scientific_name: Cornus nuttallii
-    taxon_id: 49979
+    taxon_id: 76447
     group: broadleaf
 
   - common_name: Tanoak
     scientific_name: Notholithocarpus densiflorus
-    taxon_id: 58802
+    taxon_id: 69823
     group: broadleaf
 
   - common_name: California Laurel
     scientific_name: Umbellularia californica
-    taxon_id: 48937
+    taxon_id: 48807
     group: broadleaf
 
   - common_name: Paper Birch
     scientific_name: Betula papyrifera
-    taxon_id: 48089
+    taxon_id: 49883
     group: broadleaf
 
   - common_name: Golden Chinquapin
     scientific_name: Chrysolepis chrysophylla
-    taxon_id: 58800
+    taxon_id: 53363
     group: broadleaf
 
   - common_name: Cascara Buckthorn
     scientific_name: Frangula purshiana
-    taxon_id: 54858
+    taxon_id: 77156
     group: broadleaf
 
   - common_name: Pacific Willow
     scientific_name: Salix lasiandra
-    taxon_id: 63746
+    taxon_id: 78943
     group: broadleaf
 
   - common_name: Bitter Cherry
     scientific_name: Prunus emarginata
-    taxon_id: 55850
+    taxon_id: 63905
     group: broadleaf
 
 # iNaturalist place IDs for PNW region

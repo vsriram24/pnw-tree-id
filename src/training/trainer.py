@@ -3,6 +3,9 @@
 import time
 from pathlib import Path
 
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 import torch
 import torch.nn as nn
 from torch.optim.lr_scheduler import CosineAnnealingLR
@@ -221,8 +224,14 @@ def train(
     # ===== Phase 2: Fine-tune entire model =====
     print("\n=== Phase 2: Fine-tuning entire model ===")
 
+    # Clear GPU cache before unfreezing backbone
+    if device.type == "mps":
+        torch.mps.empty_cache()
+    elif device.type == "cuda":
+        torch.cuda.empty_cache()
+
     # Reduce batch size for phase 2 to avoid OOM on memory-constrained GPUs
-    phase2_batch = max(batch_size // 2, 4)
+    phase2_batch = max(batch_size // 4, 4)
     if phase2_batch != batch_size:
         print(f"  Reducing batch size to {phase2_batch} for full model fine-tuning")
         train_loader = DataLoader(

@@ -62,8 +62,6 @@ def fetch_observations(
             "photos": "true",
             "per_page": per_page,
             "page": page,
-            "order": "desc",
-            "order_by": "created_at",
         }
 
         try:
