@@ -29,6 +29,11 @@ def about():
     return render_template("about.html")
 
 
+@bp.route("/creator")
+def creator():
+    return render_template("creator.html")
+
+
 @bp.route("/predict", methods=["POST"])
 def predict():
     if "file" not in request.files:

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}About the Creator - PNW Tree Identifier{% endblock %}
+
+{% block hero %}
+<div class="hero hero-compact">
+    <div class="hero-content">
+        <h1>About the Creator</h1>
+        <p class="hero-subtitle">The story behind this project</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-content about-page">
+
+    <section class="about-section" aria-labelledby="story-heading">
+        <h2 id="story-heading">Why I Built This</h2>
+        <div class="about-prose">
+            <p>My wife is a nature lover. On our hikes through the forests of the Pacific Northwest, she's the one who stops to admire the bark patterns on a Pacific Madrone, wonders aloud whether that's a Grand Fir or a Noble Fir, and notices the Western Larch turning gold in the fall while every other conifer stays green.</p>
+            <p>I'm an engineer. When she'd ask "what tree is that?", my instinct was to build something that could answer. So I did.</p>
+            <p>The PNW Tree Identifier started as a weekend project inspired by those trail-side conversations. It combines two things I care about: deep learning and the forests we're lucky enough to live near. The entire training dataset comes from <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a>, a platform powered by the same kind of curiosity that my wife brings to every hike -- thousands of people photographing, sharing, and identifying the living world around them.</p>
+            <p>It's not a replacement for a good field guide or a knowledgeable hiking partner, but it's a fun tool for narrowing down your guesses -- and for learning to see the differences between trees you might have walked past a hundred times without a second glance.</p>
+        </div>
+    </section>
+
+    <section class="about-section" aria-labelledby="connect-heading">
+        <h2 id="connect-heading">Find Me Online</h2>
+        <div class="about-prose">
+            <p>You can learn more about my work and other projects at <a href="https://viveksriram.com" target="_blank" rel="noopener noreferrer">viveksriram.com</a>.</p>
+        </div>
+    </section>
+
+    <div class="about-cta">
+        <a href="/" class="btn btn-primary">Try the Identifier</a>
+    </div>
+
+</div>
+{% endblock %}
