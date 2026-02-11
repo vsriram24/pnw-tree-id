@@ -14,6 +14,7 @@ COPY webapp/ webapp/
 # Create directories
 RUN mkdir -p checkpoints webapp/uploads
 
-EXPOSE 10000
+# HF Spaces uses port 7860; Render uses 10000
+EXPOSE 7860
 
-CMD ["gunicorn", "webapp.app:create_app()", "--bind", "0.0.0.0:10000", "--timeout", "120", "--workers", "1"]
+CMD ["gunicorn", "webapp.app:create_app()", "--bind", "0.0.0.0:7860", "--timeout", "120", "--workers", "1"]
