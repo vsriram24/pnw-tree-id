@@ -3,20 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Identify 40 Pacific Northwest tree species from photos using deep learning. Powered by EfficientNetV2 trained on iNaturalist research-grade observations.">
     <title>{% block title %}PNW Tree Identifier{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>PNW Tree Identifier</h1>
-        <p class="subtitle">Identify Pacific Northwest tree species from photos</p>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header role="banner">
+        <nav class="header-nav" aria-label="Main navigation">
+            <a href="/" class="logo-link" aria-label="PNW Tree Identifier home">
+                <svg class="logo-icon" viewBox="0 0 32 40" fill="currentColor" aria-hidden="true" width="28" height="35">
+                    <path d="M16 0 L10 10 L12 10 L6 20 L9 20 L3 32 L13 32 L13 40 L19 40 L19 32 L29 32 L23 20 L26 20 L20 10 L22 10 Z"/>
+                </svg>
+                <span class="logo-text">PNW Tree ID</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}">Identify</a>
+                <a href="/about" class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}">About</a>
+            </div>
+        </nav>
+        {% block hero %}{% endblock %}
     </header>
-    <main>
+
+    <main id="main-content" role="main">
         {% block content %}{% endblock %}
     </main>
-    <footer>
-        <p>Powered by EfficientNetV2 &middot; Trained on iNaturalist data</p>
+
+    <footer role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-row">
+                <span>Powered by <strong>EfficientNetV2</strong></span>
+                <span class="footer-sep" aria-hidden="true">&middot;</span>
+                <span>Trained on <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> data</span>
+                <span class="footer-sep" aria-hidden="true">&middot;</span>
+                <span>40 PNW species</span>
+            </div>
+            <div class="footer-row footer-secondary">
+                <span>Research-grade observations from Oregon, Washington &amp; British Columbia</span>
+            </div>
+        </div>
     </footer>
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

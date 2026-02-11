@@ -1,39 +1,186 @@
 {% extends "base.html" %}
 
+{% block hero %}
+<div class="hero">
+    <div class="hero-content">
+        <h1>PNW Tree Identifier</h1>
+        <p class="hero-subtitle">Upload a photo and let deep learning identify Pacific Northwest trees</p>
+        <p class="hero-detail">40 species &middot; trained on 15,000+ iNaturalist observations</p>
+    </div>
+    <div class="hero-trees" aria-hidden="true">
+        <svg class="hero-tree hero-tree-1" viewBox="0 0 32 48" fill="currentColor"><path d="M16 0 L10 12 L12 12 L6 24 L9 24 L2 38 L14 38 L14 48 L18 48 L18 38 L30 38 L23 24 L26 24 L20 12 L22 12 Z"/></svg>
+        <svg class="hero-tree hero-tree-2" viewBox="0 0 32 48" fill="currentColor"><path d="M16 0 L10 12 L12 12 L6 24 L9 24 L2 38 L14 38 L14 48 L18 48 L18 38 L30 38 L23 24 L26 24 L20 12 L22 12 Z"/></svg>
+        <svg class="hero-tree hero-tree-3" viewBox="0 0 32 48" fill="currentColor"><path d="M16 0 L10 12 L12 12 L6 24 L9 24 L2 38 L14 38 L14 48 L18 48 L18 38 L30 38 L23 24 L26 24 L20 12 L22 12 Z"/></svg>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="upload-section">
-    <div id="drop-zone" class="drop-zone">
-        <div class="drop-zone-content">
-            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-            <p>Drag & drop a tree photo here</p>
-            <p class="drop-zone-hint">or click to browse</p>
-            <p class="drop-zone-formats">JPG, PNG, WebP up to 16MB</p>
+<div class="page-content">
+
+    <!-- Identifier Tool -->
+    <section class="upload-section" aria-labelledby="upload-heading">
+        <h2 id="upload-heading" class="sr-only">Upload a Tree Photo</h2>
+
+        <div id="drop-zone" class="drop-zone" role="button" tabindex="0" aria-label="Upload area. Click or drag a tree photo here to identify it.">
+            <div class="drop-zone-content">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p class="drop-zone-prompt">Drag &amp; drop a tree photo here</p>
+                <p class="drop-zone-hint">or click to browse</p>
+                <p class="drop-zone-formats">JPG, PNG, WebP up to 16MB</p>
+            </div>
+            <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden aria-label="Choose a tree photo to upload">
         </div>
-        <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" hidden>
-    </div>
 
-    <div id="preview-section" class="preview-section hidden">
-        <img id="preview-image" alt="Uploaded tree photo">
-        <button id="clear-btn" class="btn btn-secondary">Clear</button>
-    </div>
+        <div id="preview-section" class="preview-section hidden" aria-live="polite">
+            <img id="preview-image" alt="Preview of your uploaded tree photo">
+            <button id="clear-btn" class="btn btn-secondary" aria-label="Clear uploaded image and start over">Clear</button>
+        </div>
 
-    <button id="predict-btn" class="btn btn-primary hidden">Identify Tree</button>
+        <button id="predict-btn" class="btn btn-primary hidden" aria-label="Identify the tree species in your photo">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Identify Tree
+        </button>
 
-    <div id="loading" class="loading hidden">
-        <div class="spinner"></div>
-        <p>Analyzing image...</p>
-    </div>
+        <div id="loading" class="loading hidden" role="status" aria-live="polite">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>Analyzing image...</p>
+        </div>
 
-    <div id="results" class="results hidden">
-        <h2>Results</h2>
-        <div id="predictions-list"></div>
-    </div>
+        <div id="results" class="results hidden" aria-live="polite">
+            <h3>Results</h3>
+            <div id="predictions-list" role="list" aria-label="Species predictions"></div>
+        </div>
 
-    <div id="error" class="error hidden"></div>
+        <div id="error" class="error hidden" role="alert" aria-live="assertive"></div>
+    </section>
+
+    <!-- How It Works (brief) -->
+    <section class="info-section" aria-labelledby="how-heading">
+        <h2 id="how-heading">How It Works</h2>
+        <div class="pipeline-cards">
+            <div class="pipeline-card">
+                <div class="pipeline-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                </div>
+                <h3>1. Upload</h3>
+                <p>Snap a photo of any PNW tree -- bark, needles, leaves, cones, or the whole silhouette.</p>
+            </div>
+            <div class="pipeline-card">
+                <div class="pipeline-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <h3>2. Analyze</h3>
+                <p>An EfficientNetV2 neural network -- trained on 15,000+ community-verified photos -- examines your image.</p>
+            </div>
+            <div class="pipeline-card">
+                <div class="pipeline-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <h3>3. Identify</h3>
+                <p>Get the top species matches with confidence scores -- from Douglas Fir to Pacific Madrone.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Species Overview -->
+    <section class="info-section" aria-labelledby="species-heading">
+        <h2 id="species-heading">40 PNW Species</h2>
+        <p class="section-intro">From the coastal fog belt to the high Cascades, the Pacific Northwest hosts one of the most diverse temperate forests on Earth. This model recognizes 40 native tree species across two groups.</p>
+
+        <div class="species-groups">
+            <div class="species-group">
+                <h3>
+                    <svg class="group-icon" viewBox="0 0 32 48" fill="currentColor" aria-hidden="true"><path d="M16 0 L10 12 L12 12 L6 24 L9 24 L2 38 L14 38 L14 48 L18 48 L18 38 L30 38 L23 24 L26 24 L20 12 L22 12 Z"/></svg>
+                    22 Conifers
+                </h3>
+                <p class="group-desc">Cone-bearing trees with needles or scale-like foliage. These dominate the PNW landscape.</p>
+                <div class="species-list" role="list">
+                    <span class="species-tag" role="listitem">Douglas Fir</span>
+                    <span class="species-tag" role="listitem">Western Red Cedar</span>
+                    <span class="species-tag" role="listitem">Sitka Spruce</span>
+                    <span class="species-tag" role="listitem">Western Hemlock</span>
+                    <span class="species-tag" role="listitem">Mountain Hemlock</span>
+                    <span class="species-tag" role="listitem">Ponderosa Pine</span>
+                    <span class="species-tag" role="listitem">Lodgepole Pine</span>
+                    <span class="species-tag" role="listitem">Western White Pine</span>
+                    <span class="species-tag" role="listitem">Sugar Pine</span>
+                    <span class="species-tag" role="listitem">Noble Fir</span>
+                    <span class="species-tag" role="listitem">Grand Fir</span>
+                    <span class="species-tag" role="listitem">Subalpine Fir</span>
+                    <span class="species-tag" role="listitem">Pacific Silver Fir</span>
+                    <span class="species-tag" role="listitem">White Fir</span>
+                    <span class="species-tag" role="listitem">Incense Cedar</span>
+                    <span class="species-tag" role="listitem">Alaska Yellow Cedar</span>
+                    <span class="species-tag" role="listitem">Port Orford Cedar</span>
+                    <span class="species-tag" role="listitem">Engelmann Spruce</span>
+                    <span class="species-tag" role="listitem">Western Larch</span>
+                    <span class="species-tag" role="listitem">Western Juniper</span>
+                    <span class="species-tag" role="listitem">Pacific Yew</span>
+                    <span class="species-tag" role="listitem">Coast Redwood</span>
+                </div>
+            </div>
+
+            <div class="species-group">
+                <h3>
+                    <svg class="group-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8 2 4 6 4 10c0 3 1.5 5.5 4 7v3h8v-3c2.5-1.5 4-4 4-7 0-4-4-8-8-8z"/></svg>
+                    18 Broadleaf Trees
+                </h3>
+                <p class="group-desc">Flowering trees with flat, broad leaves. Many are deciduous, adding fall color to PNW forests.</p>
+                <div class="species-list" role="list">
+                    <span class="species-tag" role="listitem">Big Leaf Maple</span>
+                    <span class="species-tag" role="listitem">Vine Maple</span>
+                    <span class="species-tag" role="listitem">Red Alder</span>
+                    <span class="species-tag" role="listitem">White Alder</span>
+                    <span class="species-tag" role="listitem">Pacific Madrone</span>
+                    <span class="species-tag" role="listitem">Oregon White Oak</span>
+                    <span class="species-tag" role="listitem">Canyon Live Oak</span>
+                    <span class="species-tag" role="listitem">Oregon Ash</span>
+                    <span class="species-tag" role="listitem">Black Cottonwood</span>
+                    <span class="species-tag" role="listitem">Quaking Aspen</span>
+                    <span class="species-tag" role="listitem">Pacific Dogwood</span>
+                    <span class="species-tag" role="listitem">Tanoak</span>
+                    <span class="species-tag" role="listitem">California Laurel</span>
+                    <span class="species-tag" role="listitem">Paper Birch</span>
+                    <span class="species-tag" role="listitem">Golden Chinquapin</span>
+                    <span class="species-tag" role="listitem">Cascara Buckthorn</span>
+                    <span class="species-tag" role="listitem">Pacific Willow</span>
+                    <span class="species-tag" role="listitem">Bitter Cherry</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data & Model Summary -->
+    <section class="info-section" aria-labelledby="data-heading">
+        <h2 id="data-heading">Behind the Scenes</h2>
+        <p class="section-intro">Curious how this works under the hood? Here's the short version. For the full technical deep-dive, visit the <a href="/about">About page</a>.</p>
+
+        <div class="detail-cards">
+            <div class="detail-card">
+                <h3>Data from iNaturalist</h3>
+                <p>Every training image comes from <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a>, a citizen science platform where naturalists worldwide share and verify species observations. We used ~400 <strong>research-grade</strong> (community-verified) photos per species from Oregon, Washington, and British Columbia -- roughly 15,500 images total.</p>
+            </div>
+
+            <div class="detail-card">
+                <h3>Transfer Learning</h3>
+                <p>Rather than training from scratch, we start with <strong>EfficientNetV2-S</strong>, a neural network pretrained on 1.28 million ImageNet images. It already recognizes textures, shapes, and patterns -- we just teach the final layers what PNW trees look like using a two-phase training approach.</p>
+            </div>
+
+            <div class="detail-card">
+                <h3>How Predictions Work</h3>
+                <p>Your photo is resized and fed through the neural network, which outputs a confidence score for each of the 40 species. The top matches are shown with their probabilities. Higher confidence = the model is more certain about its identification.</p>
+            </div>
+        </div>
+    </section>
+
 </div>
 {% endblock %}
 

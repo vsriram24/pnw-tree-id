@@ -10,10 +10,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const predictionsList = document.getElementById("predictions-list");
     const errorDiv = document.getElementById("error");
 
+    // Exit early on pages without the upload UI (e.g. /about)
+    if (!dropZone) return;
+
     let selectedFile = null;
 
     // Click to browse
     dropZone.addEventListener("click", () => fileInput.click());
+
+    // Keyboard accessibility for drop zone
+    dropZone.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            fileInput.click();
+        }
+    });
 
     // File input change
     fileInput.addEventListener("change", (e) => {
@@ -49,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         predictBtn.classList.add("hidden");
         results.classList.add("hidden");
         errorDiv.classList.add("hidden");
+        dropZone.focus();
     });
 
     // Predict button
@@ -75,11 +87,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const reader = new FileReader();
         reader.onload = (e) => {
             previewImage.src = e.target.result;
+            previewImage.alt = `Preview of uploaded image: ${file.name}`;
             dropZone.classList.add("hidden");
             previewSection.classList.remove("hidden");
             predictBtn.classList.remove("hidden");
             results.classList.add("hidden");
             errorDiv.classList.add("hidden");
+            predictBtn.focus();
         };
         reader.readAsDataURL(file);
     }
@@ -109,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 displayResults(data.predictions);
             })
-            .catch((err) => {
+            .catch(() => {
                 loading.classList.add("hidden");
                 showError("Network error. Please try again.");
                 predictBtn.classList.remove("hidden");
@@ -122,17 +136,23 @@ document.addEventListener("DOMContentLoaded", () => {
         predictions.forEach((pred, i) => {
             const item = document.createElement("div");
             item.className = "prediction-item";
+            item.setAttribute("role", "listitem");
+
+            const pct = pred.confidence_pct;
+            const displayName = pred.display_name;
+            const slug = pred.species;
+
             item.innerHTML = `
-                <span class="prediction-rank">${i + 1}.</span>
+                <span class="prediction-rank" aria-hidden="true">${i + 1}.</span>
                 <div class="prediction-info">
-                    <div class="prediction-name">${pred.display_name}</div>
-                    <div class="prediction-slug">${pred.species}</div>
+                    <div class="prediction-name">${displayName}</div>
+                    <div class="prediction-slug">${slug}</div>
                 </div>
                 <div class="prediction-confidence">
-                    <div class="confidence-bar">
+                    <div class="confidence-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${displayName}: ${pct}% confidence">
                         <div class="confidence-fill" style="width: 0%"></div>
                     </div>
-                    <div class="confidence-value">${pred.confidence_pct}%</div>
+                    <div class="confidence-value">${pct}%</div>
                 </div>
             `;
             predictionsList.appendChild(item);
@@ -140,12 +160,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // Animate confidence bar
             requestAnimationFrame(() => {
                 const fill = item.querySelector(".confidence-fill");
-                fill.style.width = `${pred.confidence_pct}%`;
+                fill.style.width = `${pct}%`;
             });
         });
 
         results.classList.remove("hidden");
         predictBtn.classList.remove("hidden");
+
+        // Move focus to results for screen reader announcement
+        results.setAttribute("tabindex", "-1");
+        results.focus();
     }
 
     function showError(message) {

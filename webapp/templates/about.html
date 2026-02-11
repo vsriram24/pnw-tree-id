@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}About - PNW Tree Identifier{% endblock %}
+
+{% block hero %}
+<div class="hero hero-compact">
+    <div class="hero-content">
+        <h1>About This Project</h1>
+        <p class="hero-subtitle">How we built a deep learning tree identifier from citizen science data</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="page-content about-page">
+
+    <!-- Overview -->
+    <section class="about-section" aria-labelledby="overview-heading">
+        <h2 id="overview-heading">The Big Picture</h2>
+        <div class="about-prose">
+            <p>The PNW Tree Identifier uses a <strong>convolutional neural network</strong> (CNN) to classify photos of trees into one of 40 species native to the Pacific Northwest. It was trained entirely on community-contributed, research-grade observations from <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a>.</p>
+            <p>The goal: make species identification more accessible, whether you're a hiker curious about the tree you just passed, a forestry student building your ID skills, or a naturalist wanting a quick second opinion.</p>
+        </div>
+    </section>
+
+    <!-- Data Source -->
+    <section class="about-section" aria-labelledby="data-source-heading">
+        <h2 id="data-source-heading">Data: Crowdsourced from Nature Enthusiasts</h2>
+        <div class="about-prose">
+            <h3>What is iNaturalist?</h3>
+            <p><a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> is a citizen science platform where people around the world upload photos of organisms they encounter in nature. Other users help identify them, and once enough people agree on a species, the observation reaches <strong>"research grade"</strong> -- a reliable, community-verified label.</p>
+            <p>This makes iNaturalist an exceptional source of labeled training data: each photo comes with a verified species ID, GPS coordinates, a date, and context about the observation. Best of all, it represents how trees actually appear "in the wild" -- with all the natural variation of lighting, angles, seasons, and camera quality.</p>
+
+            <h3>How the Data Were Collected</h3>
+            <p>For each of the 40 target species, we queried the iNaturalist API (<code>/v1/observations</code>) with these filters:</p>
+
+            <div class="info-table-wrap">
+                <table class="info-table" aria-label="iNaturalist query parameters">
+                    <thead>
+                        <tr><th>Parameter</th><th>Value</th><th>Why</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Taxon ID</td><td>Species-specific (e.g., 48256 for Douglas Fir)</td><td>Precise taxonomic targeting</td></tr>
+                        <tr><td>Place IDs</td><td>Oregon (10), Washington (46), British Columbia (7085)</td><td>Focus on PNW populations</td></tr>
+                        <tr><td>Quality grade</td><td><code>research</code></td><td>Only community-verified IDs</td></tr>
+                        <tr><td>Target count</td><td>~400 images per species</td><td>Balance across classes</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>Photos were extracted from observations and upgraded from thumbnail to medium resolution (~500px). The pipeline downloads with a 1-second rate limit to respect iNaturalist's API guidelines, and supports resuming if interrupted.</p>
+            <p>The result: <strong>~15,500 images total</strong> spanning all 40 species, representing a rich variety of bark textures, leaf shapes, growth stages, seasons, and photographic conditions.</p>
+
+            <h3>Preprocessing Pipeline</h3>
+            <p>Before training, every image passes through several quality checks:</p>
+            <ol>
+                <li><strong>Validation</strong> -- corrupt or un-openable images are discarded</li>
+                <li><strong>Resize</strong> -- longest edge scaled to 384px (preserving aspect ratio)</li>
+                <li><strong>Deduplication</strong> -- SHA256 hashes catch exact-duplicate images</li>
+                <li><strong>RGB conversion</strong> -- all images standardized to 3-channel RGB, JPEG quality 95</li>
+                <li><strong>Stratified split</strong> -- 70% training / 15% validation / 15% test, maintaining class proportions</li>
+            </ol>
+
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-number">~15,500</div>
+                    <div class="stat-label">Total images</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">~400</div>
+                    <div class="stat-label">Per species</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Regions (OR, WA, BC)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Research grade</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Architecture -->
+    <section class="about-section" aria-labelledby="model-heading">
+        <h2 id="model-heading">Model: EfficientNetV2-S</h2>
+        <div class="about-prose">
+            <h3>Why This Architecture?</h3>
+            <p><a href="https://arxiv.org/abs/2104.00298" target="_blank" rel="noopener noreferrer">EfficientNetV2</a> is a family of image classifiers designed by Google using <strong>neural architecture search</strong> -- an automated process that explores thousands of possible network designs to find the most efficient ones. The "S" (small) variant has 21.5 million parameters: powerful enough for fine-grained species classification, but small enough to run on a laptop.</p>
+
+            <h3>Architecture Overview</h3>
+            <p>The network has two main parts:</p>
+
+            <div class="architecture-diagram" role="img" aria-label="Model architecture diagram showing the backbone and classifier head">
+                <div class="arch-block arch-backbone">
+                    <div class="arch-label">Backbone (Feature Extractor)</div>
+                    <div class="arch-detail">EfficientNetV2-S</div>
+                    <div class="arch-sublabel">21.5M params &middot; ImageNet pretrained</div>
+                    <div class="arch-desc">Extracts visual features from the image using layers of convolutions. Pretrained on 1.28M ImageNet images, it already "knows" textures, edges, shapes, and patterns.</div>
+                    <div class="arch-arrow" aria-hidden="true"></div>
+                    <div class="arch-output">1280-dimensional feature vector</div>
+                </div>
+                <div class="arch-connector" aria-hidden="true"></div>
+                <div class="arch-block arch-head">
+                    <div class="arch-label">Classifier Head (Custom)</div>
+                    <div class="arch-layers">
+                        <span class="arch-layer">Dropout(0.3)</span>
+                        <span class="arch-layer">Linear(1280 &rarr; 512)</span>
+                        <span class="arch-layer">ReLU + BatchNorm</span>
+                        <span class="arch-layer">Dropout(0.15)</span>
+                        <span class="arch-layer">Linear(512 &rarr; 40)</span>
+                    </div>
+                    <div class="arch-desc">Maps the visual features to 40 tree species. Dropout layers prevent overfitting. BatchNorm stabilizes training.</div>
+                    <div class="arch-arrow" aria-hidden="true"></div>
+                    <div class="arch-output">Softmax &rarr; species probabilities</div>
+                </div>
+            </div>
+
+            <h3>What is Transfer Learning?</h3>
+            <p>Training a deep neural network from scratch requires millions of images and significant compute. <strong>Transfer learning</strong> is a shortcut: we start with a model already trained on a large, general dataset (ImageNet) and adapt it for our specific task (PNW trees).</p>
+            <p>Think of it like this: ImageNet training teaches the model to "see" -- recognizing edges, textures, shapes, and spatial relationships. We just need to teach it to use those skills for tree identification specifically.</p>
+        </div>
+    </section>
+
+    <!-- Training Process -->
+    <section class="about-section" aria-labelledby="training-heading">
+        <h2 id="training-heading">Training: Two Phases</h2>
+        <div class="about-prose">
+            <p>Training happens in two distinct phases, each with a different strategy:</p>
+
+            <div class="phase-cards">
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <span class="phase-number">Phase 1</span>
+                        <span class="phase-title">Warm Up the Head</span>
+                    </div>
+                    <div class="phase-body">
+                        <p>The backbone is <strong>frozen</strong> -- its weights don't change. Only the new classifier head trains, learning to map ImageNet features to our 40 species.</p>
+                        <div class="phase-details">
+                            <div><strong>Epochs:</strong> 5</div>
+                            <div><strong>Learning rate:</strong> 1e-3</div>
+                            <div><strong>What trains:</strong> Classifier head only</div>
+                        </div>
+                        <p class="phase-analogy">Like giving someone who already knows how to look at nature a new field guide to study.</p>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <span class="phase-number">Phase 2</span>
+                        <span class="phase-title">Fine-Tune Everything</span>
+                    </div>
+                    <div class="phase-body">
+                        <p>Now the entire network is <strong>unfrozen</strong> and trains together, but with <strong>differential learning rates</strong> -- the backbone gets gentle updates while the head keeps adapting more aggressively.</p>
+                        <div class="phase-details">
+                            <div><strong>Epochs:</strong> Up to 30 (early stopping)</div>
+                            <div><strong>Backbone LR:</strong> 1e-5 (gentle)</div>
+                            <div><strong>Head LR:</strong> 1e-4 (10x higher)</div>
+                        </div>
+                        <p class="phase-analogy">Like that same person now developing an intuition specifically tuned to PNW trees -- noticing subtle bark patterns and needle arrangements they'd previously overlook.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Training Techniques</h3>
+            <div class="info-table-wrap">
+                <table class="info-table" aria-label="Training techniques used">
+                    <thead>
+                        <tr><th>Technique</th><th>What It Does</th><th>Why It Helps</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Label smoothing (0.1)</td>
+                            <td>Softens the target from "100% this species" to "90% this, 0.26% each other"</td>
+                            <td>Prevents overconfident predictions; better calibrated scores</td>
+                        </tr>
+                        <tr>
+                            <td>Cosine annealing LR</td>
+                            <td>Learning rate follows a smooth cosine curve toward zero</td>
+                            <td>Gradual convergence without abrupt LR drops</td>
+                        </tr>
+                        <tr>
+                            <td>Early stopping</td>
+                            <td>Halts training if validation loss doesn't improve for 7 epochs</td>
+                            <td>Prevents overfitting and wasted compute</td>
+                        </tr>
+                        <tr>
+                            <td>AdamW optimizer</td>
+                            <td>Adam with decoupled weight decay (0.01)</td>
+                            <td>Better generalization than standard Adam</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Data Augmentation</h3>
+            <p>During training, each image is randomly transformed to simulate the variety of real-world conditions. This effectively multiplies the dataset size and teaches the model to be robust:</p>
+
+            <div class="info-table-wrap">
+                <table class="info-table" aria-label="Data augmentation transforms">
+                    <thead>
+                        <tr><th>Transform</th><th>Parameters</th><th>Simulates</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Random Resize Crop</td><td>384px, scale 0.6 - 1.0</td><td>Different distances and framings</td></tr>
+                        <tr><td>Horizontal Flip</td><td>p = 0.5</td><td>Trees look the same both ways</td></tr>
+                        <tr><td>Color Jitter</td><td>Brightness/contrast/saturation &plusmn;0.3</td><td>Varying sunlight and seasons</td></tr>
+                        <tr><td>Rotation</td><td>&plusmn;15 degrees</td><td>Tilted camera angles</td></tr>
+                        <tr><td>Random Erasing</td><td>p = 0.2, 2-15% of image</td><td>Occlusion by branches, signs, etc.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>At <strong>inference time</strong>, augmentation is disabled. Images are deterministically resized to 422px and center-cropped to 384px for consistent, reproducible predictions.</p>
+        </div>
+    </section>
+
+    <!-- Inference -->
+    <section class="about-section" aria-labelledby="inference-heading">
+        <h2 id="inference-heading">How Predictions Work</h2>
+        <div class="about-prose">
+            <p>When you upload a photo, here's what happens behind the scenes:</p>
+
+            <div class="inference-steps">
+                <div class="inference-step">
+                    <div class="step-number" aria-hidden="true">1</div>
+                    <div class="step-content">
+                        <h3>Image Preparation</h3>
+                        <p>Your photo is validated, resized to 422px on the long edge, then center-cropped to 384&times;384 pixels. Pixel values are normalized to match ImageNet statistics (the same preprocessing the model was trained with).</p>
+                    </div>
+                </div>
+                <div class="inference-step">
+                    <div class="step-number" aria-hidden="true">2</div>
+                    <div class="step-content">
+                        <h3>Forward Pass</h3>
+                        <p>The processed image tensor passes through all layers of EfficientNetV2-S. The backbone extracts a 1,280-dimensional feature vector; the classifier head maps this to 40 raw scores (logits), one per species.</p>
+                    </div>
+                </div>
+                <div class="inference-step">
+                    <div class="step-number" aria-hidden="true">3</div>
+                    <div class="step-content">
+                        <h3>Softmax & Ranking</h3>
+                        <p>The softmax function converts the 40 raw scores into probabilities that sum to 1.0. The top-5 species (by probability) are returned as the prediction, each with a confidence percentage.</p>
+                    </div>
+                </div>
+                <div class="inference-step">
+                    <div class="step-number" aria-hidden="true">4</div>
+                    <div class="step-content">
+                        <h3>Cleanup</h3>
+                        <p>Your uploaded image is deleted from the server immediately after prediction. Nothing is stored.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Limitations -->
+    <section class="about-section" aria-labelledby="limits-heading">
+        <h2 id="limits-heading">Limitations & Tips</h2>
+        <div class="about-prose">
+            <ul class="tips-list">
+                <li><strong>Geographic focus:</strong> The model was trained on trees from Oregon, Washington, and British Columbia. It may be less accurate for trees outside this region, or for planted/ornamental specimens.</li>
+                <li><strong>40 species only:</strong> If the tree isn't one of the 40 recognized species, the model will still pick its best guess from those 40. Check the confidence score -- low confidence suggests the species may not be in the training set.</li>
+                <li><strong>Photo quality matters:</strong> Clear, well-lit photos of distinctive features (bark, leaves, needles, cones) work best. Blurry or distant shots may produce less reliable results.</li>
+                <li><strong>Not a replacement for field guides:</strong> This is a tool to help you narrow down possibilities. For confident identification, cross-reference with field guides, herbarium specimens, or local botanists.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Acknowledgments -->
+    <section class="about-section" aria-labelledby="ack-heading">
+        <h2 id="ack-heading">Acknowledgments</h2>
+        <div class="about-prose">
+            <p><strong>iNaturalist</strong> and its global community of citizen scientists made this project possible. Every one of the ~15,500 training images was contributed and verified by real people exploring nature -- hikers, botanists, students, and enthusiasts who took the time to photograph, upload, and identify the trees they encountered.</p>
+            <p>The pretrained backbone comes from the <strong>EfficientNetV2</strong> paper by Tan &amp; Le (2021), built on the <strong>ImageNet</strong> dataset. The web framework uses <strong>Flask</strong>, and the deep learning stack runs on <strong>PyTorch</strong>.</p>
+        </div>
+    </section>
+
+    <div class="about-cta">
+        <a href="/" class="btn btn-primary">Try the Identifier</a>
+    </div>
+
+</div>
+{% endblock %}
