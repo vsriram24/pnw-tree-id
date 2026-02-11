@@ -6,6 +6,47 @@ Snap a photo of a tree, and this app will tell you what species it is -- from th
 
 ---
 
+## Quickstart: Run It Locally
+
+Want to try the app on your own machine? Here's the short version:
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/vsriram24/pnw-tree-id.git
+cd pnw-tree-id
+
+# 2. Create a virtual environment (recommended)
+python3 -m venv venv
+source venv/bin/activate        # Linux / macOS
+# venv\Scripts\activate          # Windows
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Download data, preprocess, and train the model
+python scripts/download_dataset.py      # ~15,500 images from iNaturalist (takes a while)
+python scripts/prepare_dataset.py       # validate, resize, split
+python scripts/train.py                 # two-phase training -> checkpoints/best_model.pt
+
+# 5. Launch the web app
+python webapp/app.py
+```
+
+Then open **http://localhost:5000** in your browser, upload a tree photo, and get predictions.
+
+> **Note:** Step 4 downloads ~15,500 images and trains a deep learning model, which takes significant time and disk space. If you just want to run the web app, you only need a trained checkpoint at `checkpoints/best_model.pt` -- you can skip straight to step 5 if you already have one.
+
+> **macOS users:** Port 5000 may be occupied by AirPlay Receiver. If you get a "403" or connection refused, either disable AirPlay Receiver in System Settings > General > AirDrop & Handoff, or change the port in `webapp/app.py`.
+
+### Requirements
+
+- **Python 3.9+** (tested on 3.9 and 3.11)
+- ~2 GB disk space for dependencies (PyTorch is large)
+- ~1.5 GB for the image dataset (if training from scratch)
+- ~240 MB for the trained model checkpoint
+
+---
+
 ## What's Inside
 
 | | |
@@ -257,21 +298,11 @@ Under the hood:
 - Predictions use softmax over 40 output logits to produce calibrated confidence scores
 - Uploaded files are cleaned up immediately after prediction
 
-### Running Locally
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Start the web app
-python webapp/app.py
-
-# Open http://localhost:5000
-```
+See the [Quickstart](#quickstart-run-it-locally) at the top for full clone-to-running instructions.
 
 ---
 
-## Full Pipeline: From Zero to Predictions
+## Full Pipeline: Step by Step
 
 ### 1. Download training data
 
