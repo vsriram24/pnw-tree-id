@@ -1,3 +1,12 @@
+---
+title: PNW Tree Identifier
+emoji: 🌲
+colorFrom: green
+colorTo: green
+sdk: docker
+pinned: false
+---
+
 # PNW Tree Identifier
 
 **A deep learning-powered field guide for the forests of the Pacific Northwest.**
