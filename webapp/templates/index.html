@@ -71,21 +71,21 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                 </div>
                 <h3>1. Upload</h3>
-                <p>Snap a photo of any PNW tree -- bark, needles, leaves, cones, or the whole silhouette.</p>
+                <p>Snap a photo of any PNW tree - bark, needles, leaves, cones, or the whole silhouette.</p>
             </div>
             <div class="pipeline-card">
                 <div class="pipeline-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 </div>
                 <h3>2. Analyze</h3>
-                <p>An EfficientNetV2 neural network -- trained on 15,000+ community-verified photos -- examines your image.</p>
+                <p>An EfficientNetV2 neural network trained on 15,000+ community-verified photos examines your image.</p>
             </div>
             <div class="pipeline-card">
                 <div class="pipeline-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 </div>
                 <h3>3. Identify</h3>
-                <p>Get the top species matches with confidence scores -- from Douglas Fir to Pacific Madrone.</p>
+                <p>Get the top species matches with confidence scores, from Douglas Fir to Pacific Madrone.</p>
             </div>
         </div>
     </section>
@@ -161,22 +161,22 @@
     <!-- Data & Model Summary -->
     <section class="info-section" aria-labelledby="data-heading">
         <h2 id="data-heading">Behind the Scenes</h2>
-        <p class="section-intro">Curious how this works under the hood? Here's the short version. For the full technical deep-dive, visit the <a href="/about">About page</a>.</p>
+        <p class="section-intro">Curious how this works under the hood? Here's the short version. For the full technical deep-dive, visit the <a href="/about">Background page</a>.</p>
 
         <div class="detail-cards">
             <div class="detail-card">
                 <h3>Data from iNaturalist</h3>
-                <p>Every training image comes from <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a>, a citizen science platform where naturalists worldwide share and verify species observations. We used ~400 <strong>research-grade</strong> (community-verified) photos per species from Oregon, Washington, and British Columbia -- roughly 15,500 images total.</p>
+                <p>Every training image comes from <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a>, a citizen science platform where naturalists worldwide share and verify species observations. We used ~400 <strong>research-grade</strong> (community-verified) photos per species from Oregon, Washington, and British Columbia - roughly 15,500 images total.</p>
             </div>
 
             <div class="detail-card">
                 <h3>Transfer Learning</h3>
-                <p>Rather than training from scratch, we start with <strong>EfficientNetV2-S</strong>, a neural network pretrained on 1.28 million ImageNet images. It already recognizes textures, shapes, and patterns -- we just teach the final layers what PNW trees look like using a two-phase training approach.</p>
+                <p>Rather than training from scratch, we start with <strong>EfficientNetV2-S</strong>, a neural network pretrained on 1.28 million ImageNet images. It already recognizes textures, shapes, and patterns - we just teach the final layers what PNW trees look like using a two-phase training approach.</p>
             </div>
 
             <div class="detail-card">
                 <h3>How Predictions Work</h3>
-                <p>Your photo is resized and fed through the neural network, which outputs a confidence score for each of the 40 species. The top matches are shown with their probabilities. Higher confidence = the model is more certain about its identification.</p>
+                <p>Your photo is resized and fed through the neural network, which outputs a confidence score for each of the 40 species. The top matches are shown with their probabilities.</p>
             </div>
         </div>
     </section>

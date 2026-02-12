@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}About - PNW Tree Identifier{% endblock %}
+{% block title %}Background - PNW Tree Identifier{% endblock %}
 
 {% block hero %}
 <div class="hero hero-compact">
     <div class="hero-content">
         <h1>About This Project</h1>
-        <p class="hero-subtitle">How we built a deep learning tree identifier from citizen science data</p>
+        <p class="hero-subtitle">Building a deep learning tree identifier from citizen science data</p>
     </div>
 </div>
 {% endblock %}
@@ -19,7 +19,6 @@
         <h2 id="overview-heading">The Big Picture</h2>
         <div class="about-prose">
             <p>The PNW Tree Identifier uses a <strong>convolutional neural network</strong> (CNN) to classify photos of trees into one of 40 species native to the Pacific Northwest. It was trained entirely on community-contributed, research-grade observations from <a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a>.</p>
-            <p>The goal: make species identification more accessible, whether you're a hiker curious about the tree you just passed, a forestry student building your ID skills, or a naturalist wanting a quick second opinion.</p>
         </div>
     </section>
 
@@ -28,8 +27,8 @@
         <h2 id="data-source-heading">Data: Crowdsourced from Nature Enthusiasts</h2>
         <div class="about-prose">
             <h3>What is iNaturalist?</h3>
-            <p><a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> is a citizen science platform where people around the world upload photos of organisms they encounter in nature. Other users help identify them, and once enough people agree on a species, the observation reaches <strong>"research grade"</strong> -- a reliable, community-verified label.</p>
-            <p>This makes iNaturalist an exceptional source of labeled training data: each photo comes with a verified species ID, GPS coordinates, a date, and context about the observation. Best of all, it represents how trees actually appear "in the wild" -- with all the natural variation of lighting, angles, seasons, and camera quality.</p>
+            <p><a href="https://www.inaturalist.org/" target="_blank" rel="noopener noreferrer">iNaturalist</a> is a citizen science platform where people around the world upload photos of organisms they encounter in nature. Other users help identify them, and once enough people agree on a species, the observation reaches <strong>"research grade"</strong>: a reliable, community-verified label.</p>
+            <p>This makes iNaturalist an exceptional source of labeled training data. Each photo comes with a verified species ID, GPS coordinates, a date, and context about the observation. Best of all, the platform represents how trees actually appear "in the wild," with all the natural variation of lighting, angles, seasons, and camera quality.</p>
 
             <h3>How the Data Were Collected</h3>
             <p>For each of the 40 target species, we queried the iNaturalist API (<code>/v1/observations</code>) with these filters:</p>
@@ -54,11 +53,11 @@
             <h3>Preprocessing Pipeline</h3>
             <p>Before training, every image passes through several quality checks:</p>
             <ol>
-                <li><strong>Validation</strong> -- corrupt or un-openable images are discarded</li>
-                <li><strong>Resize</strong> -- longest edge scaled to 384px (preserving aspect ratio)</li>
-                <li><strong>Deduplication</strong> -- SHA256 hashes catch exact-duplicate images</li>
-                <li><strong>RGB conversion</strong> -- all images standardized to 3-channel RGB, JPEG quality 95</li>
-                <li><strong>Stratified split</strong> -- 70% training / 15% validation / 15% test, maintaining class proportions</li>
+                <li><strong>Validation</strong>: corrupt or un-openable images are discarded</li>
+                <li><strong>Resize</strong>: longest edge scaled to 384px (preserving aspect ratio)</li>
+                <li><strong>Deduplication</strong>: SHA256 hashes catch exact-duplicate images</li>
+                <li><strong>RGB conversion</strong>: all images standardized to 3-channel RGB, JPEG quality 95</li>
+                <li><strong>Stratified split</strong>: 70% training / 15% validation / 15% test, maintaining class proportions</li>
             </ol>
 
             <div class="stat-cards">
@@ -87,7 +86,7 @@
         <h2 id="model-heading">Model: EfficientNetV2-S</h2>
         <div class="about-prose">
             <h3>Why This Architecture?</h3>
-            <p><a href="https://arxiv.org/abs/2104.00298" target="_blank" rel="noopener noreferrer">EfficientNetV2</a> is a family of image classifiers designed by Google using <strong>neural architecture search</strong> -- an automated process that explores thousands of possible network designs to find the most efficient ones. The "S" (small) variant has 21.5 million parameters: powerful enough for fine-grained species classification, but small enough to run on a laptop.</p>
+            <p><a href="https://arxiv.org/abs/2104.00298" target="_blank" rel="noopener noreferrer">EfficientNetV2</a> is a family of image classifiers designed by Google using <strong>neural architecture search</strong> – an automated process that explores thousands of possible network designs to find the most efficient ones. The "S" (small) variant has 21.5 million parameters: powerful enough for fine-grained species classification, but small enough to run on a laptop.</p>
 
             <h3>Architecture Overview</h3>
             <p>The network has two main parts:</p>
@@ -119,7 +118,7 @@
 
             <h3>What is Transfer Learning?</h3>
             <p>Training a deep neural network from scratch requires millions of images and significant compute. <strong>Transfer learning</strong> is a shortcut: we start with a model already trained on a large, general dataset (ImageNet) and adapt it for our specific task (PNW trees).</p>
-            <p>Think of it like this: ImageNet training teaches the model to "see" -- recognizing edges, textures, shapes, and spatial relationships. We just need to teach it to use those skills for tree identification specifically.</p>
+            <p>ImageNet training teaches the model to "see," recognizing edges, textures, shapes, and spatial relationships. Our custom classification head teaches it to use those skills specifically for tree identification.</p>
         </div>
     </section>
 
@@ -136,14 +135,11 @@
                         <span class="phase-title">Warm Up the Head</span>
                     </div>
                     <div class="phase-body">
-                        <p>The backbone is <strong>frozen</strong> -- its weights don't change. Only the new classifier head trains, learning to map ImageNet features to our 40 species.</p>
+                        <p>The backbone is <strong>frozen</strong> - its weights don't change. Only the new classifier head trains, learning to map ImageNet features to our 40 species.</p>
                         <div class="phase-details">
                             <div><strong>Epochs:</strong> 5</div>
                             <div><strong>Learning rate:</strong> 1e-3</div>
                             <div><strong>What trains:</strong> Classifier head only</div>
-                        </div>
-                        <p class="phase-analogy">Like giving someone who already knows how to look at nature a new field guide to study.</p>
-                    </div>
                 </div>
 
                 <div class="phase-card">
@@ -157,9 +153,6 @@
                             <div><strong>Epochs:</strong> Up to 30 (early stopping)</div>
                             <div><strong>Backbone LR:</strong> 1e-5 (gentle)</div>
                             <div><strong>Head LR:</strong> 1e-4 (10x higher)</div>
-                        </div>
-                        <p class="phase-analogy">Like that same person now developing an intuition specifically tuned to PNW trees -- noticing subtle bark patterns and needle arrangements they'd previously overlook.</p>
-                    </div>
                 </div>
             </div>
 
@@ -271,8 +264,8 @@
     <section class="about-section" aria-labelledby="ack-heading">
         <h2 id="ack-heading">Acknowledgments</h2>
         <div class="about-prose">
-            <p><strong>iNaturalist</strong> and its global community of citizen scientists made this project possible. Every one of the ~15,500 training images was contributed and verified by real people exploring nature -- hikers, botanists, students, and enthusiasts who took the time to photograph, upload, and identify the trees they encountered.</p>
-            <p>The pretrained backbone comes from the <strong>EfficientNetV2</strong> paper by Tan &amp; Le (2021), built on the <strong>ImageNet</strong> dataset. The web framework uses <strong>Flask</strong>, and the deep learning stack runs on <strong>PyTorch</strong>.</p>
+            <p><strong>iNaturalist</strong> and its global community of citizen scientists made this project possible. Every one of the ~15,500 training images was contributed and verified by real people exploring nature - hikers, botanists, students, and enthusiasts who took the time to photograph, upload, and identify the trees they encountered.</p>
+            <p>The pretrained backbone comes from the <strong>EfficientNetV2</strong> paper by Tan &amp; Le (2021), built on the <strong>ImageNet</strong> dataset. The web framework uses <strong>Flask</strong>, and the deep learning stack runs on <strong>PyTorch</strong>. Model and app development were assisted via <strong>Claude Code</strong>.</p>
         </div>
     </section>
 
